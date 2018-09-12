@@ -1,109 +1,96 @@
-import java.util.Random;
 
-//part08までは終わりました。次はpart09から見てください
+import java.util.Random;
 
 public class part01 {
 
-	static String name = "アルス";// 主人公の名前
-	static int lv = 30;// 主人公のレベル
-	static int hp = 30;// 主人公のHP
-	static int gold = 50;// 主人公の所持金
-
 	public static void main(String[] args) throws java.io.IOException {
 
-		putJyosyou();
+		Console.putjyosyou(); // 序章を表示
+
 		putCommand();
 
-		if (hp <= 0) {
+		if (Player.hp <= 0) {
 			return;
 		}
 
+		// りゅうおうを倒しにいく↓
+		if (Player.lv > 40) { // レベルが40以上満の場合
+			Console.putGameClear(); // ゲームクリアの画面を表示
+		} else { // レベルが40未満の場合
+			Console.putGameOver(); // ゲームオーバーの画面を表示
+		}
 	}
 
-	// 序章
-	public static void putJyosyou() {
-		System.out.println("りゅうおうに光の玉を奪われた！！");
-		putStatus();
-	}
-
-	public static void putStatus() {
-		System.out.println("---------------------------------");
-		System.out.println("  " + name + "  " + "Lｖ" + lv + "  " + "HP" + hp + "  " + "G" + gold);
-		System.out.println("---------------------------------");
-	}
+	/**
+	 * コマンドを表示します↓
+	 */
 
 	public static void putCommand() throws java.io.IOException {
-		System.out.println("1,魔王を倒しにいく");
-		System.out.println("2,スライムをたおす");
-		System.out.println("3,宿屋に泊まる");
+		System.out.println("1.りゅうおうを倒しに行く");
+		System.out.println("2.修行してからりゅうおうを倒しにいく");
+		System.out.println("3.宿屋に泊る");
 
-		int c = inputCommand();
+		int c = part01.inputCommand();
 
 		if (c == '1') {
-			System.out.println("魔王が現れた！");
-			if (lv > 40) {
-				putGameClear();
-			}
-			if (lv <= 40) {
-				putGameOver();
-			}
-
+			System.out.println("りゅうおうが現れた");
 		} else if (c == '2') {
 			syugyou();
-		} else if (c == '3') {
-			if (gold >= 10) {
-				hp = lv;
-				gold -= 10;
-			}
 
-			putStatus();
+		} else if (c == '3') {// 宿屋に泊まる
+			if (Player.gold < 10) {
+				System.out.println("所持金が足りません");
+				putCommand();
+			}
+			Player.hp = Player.lv;
+			Player.gold -= 10;
+			System.out.println("HPが回復した");
+			Console.putStatus();
 			putCommand();
 		}
 	}
 
 	public static void syugyou() throws java.io.IOException {
-
 		Random r = new Random();
 
-		int e = r.nextInt(3) + 1;
-		System.out.println("敵が" + e + "匹現れた");
-		System.out.println();
+		// 敵出現↓
+		int e = r.nextInt(3) + 1;// 敵の数↓
+		System.out.println("敵が" + e + "匹あらわれた");
+		String m = "の具志堅の";
+		String s = "";
+		for (int i = 0; i < e; i++) {// for(変数の初期化;条件;変数の更新）
+			s = s + m;// 繰り返す処理
+		}
 
+		System.out.println(s);
+
+		// HPを減らす↓
 		int d = r.nextInt(8);
-		hp -= d;
+		Player.hp -= d;
+		if (Player.hp < 0) {
+			Player.hp = 0;
+		}
 
+		// レベル上昇↓
+		Player.lv += e;
+		// System.out.println("レベルが"+Player.lv+"になった");
 
-		lv += e;
-
-		System.out.println(d + "のダメージを受けた");
-
-		if (hp <= 0) {
-			hp = 0;
-			putGameOver();
+		if (Player.hp <= 0) {
+			System.out.println("GAME OVER");
 		} else {
-			putStatus();
+			Console.putStatus();
 			putCommand();
-
 		}
 	}
 
 	public static int inputCommand() throws java.io.IOException {
 		int c = System.in.read();
-		if (c == 10 || c == 13) {
-			return inputCommand();
+
+		if (c == 10 || c == 13) {// 13はEnterのこと（キーコード一覧参照）
+			return (inputCommand());
+
 		}
-		return c;
-	}
-
-	// ゲームオーバーを表示します
-	public static void putGameOver() {
-		System.out.println("GAME OVER");
-	}
-
-	// ゲームクリアを表示します
-	public static void putGameClear() {
-		System.out.println("GAME CLEAR");
-		return;
+		return (c);// cに戻る、cはsystem.in.read （part08）
 	}
 
 }
