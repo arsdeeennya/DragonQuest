@@ -4,6 +4,8 @@ public class Console {
 	/**
 	 * 序章を表示します こうやってコメントアウトするとコマンドプロントを操作して、マニュアルが作れる(Part05参照)
 	 */
+
+
 	public static void putjyosyou() {
 
 		/*
@@ -16,7 +18,7 @@ public class Console {
 
 	public static void putStatus() {
 		put("-------------------------");
-		put(Player.getStatusString());
+		put(part01.m_player.getStatusString());
 		put("-------------------------");
 	}
 
@@ -24,7 +26,7 @@ public class Console {
 	 * ゲームクリアの画面を表示します
 	 */
 	public static void putGameClear() {
-		System.out.println("りゅうおうを倒した");
+		System.out.println("りゅうおうを倒した！！");
 	}
 
 	/**

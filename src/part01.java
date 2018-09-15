@@ -3,18 +3,20 @@ import java.util.Random;
 
 public class part01 {
 
+	static Player m_player = new Player();
+
 	public static void main(String[] args) throws java.io.IOException {
 
 		Console.putjyosyou(); // 序章を表示
 
 		putCommand();
 
-		if (Player.hp <= 0) {
+		if (m_player.hp <= 0) {
 			return;
 		}
 
 		// りゅうおうを倒しにいく↓
-		if (Player.lv > 40) { // レベルが40以上満の場合
+		if (m_player.lv > 40) { // レベルが40以上満の場合
 			Console.putGameClear(); // ゲームクリアの画面を表示
 		} else { // レベルが40未満の場合
 			Console.putGameOver(); // ゲームオーバーの画面を表示
@@ -38,12 +40,12 @@ public class part01 {
 			syugyou();
 
 		} else if (c == '3') {// 宿屋に泊まる
-			if (Player.gold < 10) {
+			if (m_player.gold < 10) {
 				System.out.println("所持金が足りません");
 				putCommand();
 			}
-			Player.hp = Player.lv;
-			Player.gold -= 10;
+			m_player.hp = m_player.lv;
+			m_player.gold -= 10;
 			System.out.println("HPが回復した");
 			Console.putStatus();
 			putCommand();
@@ -66,16 +68,16 @@ public class part01 {
 
 		// HPを減らす↓
 		int d = r.nextInt(8);
-		Player.hp -= d;
-		if (Player.hp < 0) {
-			Player.hp = 0;
+		m_player.hp -= d;
+		if (m_player.hp <= 0) {
+			m_player.hp = 0;
 		}
 
 		// レベル上昇↓
-		Player.lv += e;
-		// System.out.println("レベルが"+Player.lv+"になった");
+		m_player.lv += e;
+		// System.out.println("レベルが"+m_player.lv+"になった");
 
-		if (Player.hp <= 0) {
+		if (m_player.hp <= 0) {
 			System.out.println("GAME OVER");
 		} else {
 			Console.putStatus();

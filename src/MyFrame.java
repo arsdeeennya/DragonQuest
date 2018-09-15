@@ -14,13 +14,16 @@ import javax.swing.JPanel;
 
 public class MyFrame extends JFrame {
 
+	JLabel jlMain;
 	JLabel jlChild;
 	JLabel jlMsg;
 	JPanel jpChild2;
+	Player m_player;
 	BufferedImage biMonster;
 
 	public MyFrame() throws IOException {
 
+		m_player = new Player();
 		File file = new File("vx_chara08_a-3f6af75.png");// ファイルを開くimport java.io.File;
 		biMonster = ImageIO.read(file); // 画像全体を読み込む import
 										// javax.imageio.ImageIO;
@@ -38,14 +41,39 @@ public class MyFrame extends JFrame {
 			System.out.println("キー" + e.getKeyCode() + "のイベント" + e.getKeyCode() + "が押されたよ");
 
 			if (e.getKeyCode() == java.awt.event.KeyEvent.VK_1) {
-				jlMsg.setText("りゅうおうを倒した");
+
+				jpChild2.removeAll();
+				if (m_player.hp >= 90) {
+				jlMsg.setText("<html>りゅうおうを倒した！！<br>まかにゃんおめでとう！！ふーん！！");
+				}else{
+				jlMsg.setText("<html>全滅しました。<br>まかにゃんかわいちょ～～");
+				m_player = null;
+				}
 			}
 			if (e.getKeyCode() == java.awt.event.KeyEvent.VK_2) {
 				jpChild2.removeAll();
 				addMonster();
 			}
 			if (e.getKeyCode() == java.awt.event.KeyEvent.VK_3) {
-				jlMsg.setText("昨夜はお楽しみでしたね");
+				if (m_player.gold >= 10) {
+					m_player.hp = m_player.lv;
+					m_player.gold -= 10;
+					jlChild.setText(m_player.getStatusString());
+					jlMsg.setText("昨夜はお楽しみでしたね");
+				}else{
+					jlMsg.setText("ゴールドが足りない！！");
+				}
+			}
+			if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+				jpChild2.removeAll();
+				jpChild2.add(jlMain);
+				if(m_player == null){//GAME OVERの場合
+					jlMsg.setText("りゅうおうに光の玉が奪われた！！");
+					m_player = new Player();
+					jlChild.setText(m_player.getStatusString());
+				}else{
+					jlMsg.setText("何をしますか");
+				}
 			}
 		}
 	}
@@ -69,7 +97,7 @@ public class MyFrame extends JFrame {
 		jp.add(jpChild);
 
 		// ラベルを作成し、子パネルに貼り付け
-		jlChild = new JLabel(Player.getStatusString());
+		jlChild = new JLabel(m_player.getStatusString());
 		jlChild.setFont(f);
 		jlChild.setForeground(Color.WHITE);
 		jlChild.setPreferredSize(new java.awt.Dimension(900, 60));
@@ -81,7 +109,7 @@ public class MyFrame extends JFrame {
 		jp.add(jpChild2);
 
 		// 選択肢をパネルに貼り付け
-		JLabel jlMain = new JLabel("<html>1.りゅうおうを倒しにいく<br>2.スライムをたおす<br>3.宿屋に泊まる");
+		jlMain = new JLabel("<html>1.りゅうおうを倒しにいく<br>2.スライムをたおす<br>3.宿屋に泊まる");
 		jlMain.setFont(f);
 		jpChild2.add(jlMain);
 
@@ -92,7 +120,7 @@ public class MyFrame extends JFrame {
 
 		// レイアウト３行目
 		// ラベルを作成し、パネルに貼り付け
-		jlMsg = new JLabel("ドラゴンクエストだよん");
+		jlMsg = new JLabel("りゅうおうに光の玉が奪われた！！");
 
 		jlMsg.setFont(f);
 		jlMsg.setForeground(new Color(255, 128, 0));
@@ -131,23 +159,32 @@ public class MyFrame extends JFrame {
 		 */
 		// HPを減らす↓
 		int d = r.nextInt(8);
-		Player.hp -= d;
-		if (Player.hp < 0) {
-			Player.hp = 0;
+		String s =
+				"<html>スライムが" + e + "匹あらわれた!!<br>"
+				+ m_player.name + "は" + d + "ポイントのダメージを受けた!!<br>";
+
+		m_player.hp -= d;
+//		jlChild.setText(m_player.getStatusString());
+
+		if (m_player.hp <= 0) {
+			m_player = null;
 		}
+
+		try{
+
 		// レベル上昇↓
-		Player.lv += e;
-
-		String s = "<html>スライムが" + e + "匹あらわれた!!<br>" + Player.name + "は" + d + "ポイントのダメージを受けた!!<br>";
-
-		if (Player.hp == 0) {
+		m_player.lv += e;
+		s += "レベルが" + m_player.lv + "になった";
+		}catch(NullPointerException npe){
 			s += "GAME OVER";
-		} else {
-			s += "レベルが" + Player.lv + "になった";
 		}
+
+
 
 		// メッセージ表示
 		jlMsg.setText(s);
-		jlChild.setText(Player.getStatusString());
+		jlChild.setText(m_player.getStatusString());
+
+
 	}
 }
